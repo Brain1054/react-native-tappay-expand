@@ -62,4 +62,15 @@ RCT_EXTERN_METHOD(getApplePayPrime: (NSDictionary)merchantData
                   resolver: (RCTPromiseResolveBlock)resolve
                   rejecter: (RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(getJKOPayPrime: (NSString*)returnUrl
+                  resolver: (RCTPromiseResolveBlock)resolve
+                  rejecter: (RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(isJKOPayAvailable:(RCTPromiseResolveBlock)promise rejector: (RCTPromiseRejectBlock)reject)
+
+//RCT_EXTERN_METHOD(handleJKOUniversalLink: (NSString*)url
+//                  resolver: (RCTPromiseResolveBlock)resolve
+//                  rejecter: (RCTPromiseRejectBlock)reject)
+
 @end
+

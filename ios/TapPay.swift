@@ -23,6 +23,7 @@ class TapPay: NSObject {
     private var tpdCard: TPDCard?
     private var tpdLinePay: TPDLinePay?
     private var tpdApplePay: TPDApplePay?
+    private var tpdJKOPay: TPDJKOPay?
     var applePayResolver: RCTPromiseResolveBlock! = nil
     var applePayRejector: RCTPromiseRejectBlock! = nil
     var applePay : TPDApplePay!
@@ -97,6 +98,7 @@ class TapPay: NSObject {
         }.createToken(withGeoLocation: "UNKNOWN")
     }
     
+    // Line pay
     @objc
     func getLinePayPrime(
         _ returnUrl: String,
@@ -129,6 +131,44 @@ class TapPay: NSObject {
             resolve(true)
         } else {
             reject("Fail", "LINE Pay transaction fail.", nil)
+        }
+    }
+    
+    // JKO Pay
+    @objc
+    func getJKOPayPrime(
+        _ returnUrl: String,
+        resolver resolve: @escaping RCTPromiseResolveBlock,
+        rejecter reject: @escaping RCTPromiseRejectBlock
+    ) {
+        let tpdJKOPay = TPDJKOPay.setup(withReturnUrl: returnUrl)
+        if (TPDJKOPay.isJKOPayAvailable()){
+            tpdJKOPay.onSuccessCallback{
+                (prime) in resolve([ "prime": prime ])
+            }.onFailureCallback{
+                (status, message) in reject(String(status), message, nil)
+            }.getPrime()
+        } else {
+            reject(String("Fail"), String("JKO Pay is not exist."), nil)
+        }
+    }
+    
+    @objc
+    func isJKOPayAvailable(_ promise: RCTPromiseResolveBlock, rejector reject: RCTPromiseRejectBlock) {
+
+        promise(TPDJKOPay.isJKOPayAvailable())
+    }
+    
+    @objc
+    func handleJKOUniversalLink(
+        continue userActivity: NSUserActivity,
+        resolver resolve: @escaping RCTPromiseResolveBlock,
+        rejecter reject: @escaping RCTPromiseRejectBlock
+    ) {
+        if let url = userActivity.webpageURL, TPDJKOPay.handleJKOUniversalLink(url) {
+            resolve(true)
+        } else {
+            reject("Fail", "JKO Pay transaction fail.", nil)
         }
     }
     
