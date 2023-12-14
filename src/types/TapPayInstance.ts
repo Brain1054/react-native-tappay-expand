@@ -37,6 +37,12 @@ export default interface TapPayInstance {
   getLinePayPrime: (returnUrl: string) => Promise<{ prime: string | null }>;
   isLinePayAvailable: () => Promise<boolean>;
   handleLinePayURL: (url: string) => Promise<boolean>;
+  getJKOPayPrime: (returnUrl: string) => Promise<{
+    prime: string | null;
+  }>;
+  isJKOPayAvailable: () => Promise<boolean>;
+  jkoPayRedirectWithPaymentUrl: (paymentUrl: string) => Promise<boolean>;
+  installJKOApp: () => void;
   isApplePayAvailable: () => Promise<boolean>;
   getApplePayPrime: (
     merchantData: MerchantData,
