@@ -141,9 +141,9 @@ class TapPay: NSObject {
         resolver resolve: @escaping RCTPromiseResolveBlock,
         rejecter reject: @escaping RCTPromiseRejectBlock
     ) {
-        let tpdJKOPay = TPDJKOPay.setup(withReturnUrl: returnUrl)
+        self.tpdJKOPay = TPDJKOPay.setup(withReturnUrl: returnUrl)
         if (TPDJKOPay.isJKOPayAvailable()){
-            tpdJKOPay.onSuccessCallback{
+            self.tpdJKOPay.onSuccessCallback{
                 (prime) in resolve([ "prime": prime ])
             }.onFailureCallback{
                 (status, message) in reject(String(status), message, nil)
@@ -155,8 +155,35 @@ class TapPay: NSObject {
     
     @objc
     func isJKOPayAvailable(_ promise: RCTPromiseResolveBlock, rejector reject: RCTPromiseRejectBlock) {
-
         promise(TPDJKOPay.isJKOPayAvailable())
+    }
+    
+    @objc
+    func installJKOApp() {
+        TPDJKOPay.installJKOApp()
+    }
+    
+    @objc
+    func jkoPayRedirectWithPaymentUrl(
+        _ paymentUrl: String,
+       resolver resolve: @escaping RCTPromiseResolveBlock,
+       rejecter reject: @escaping RCTPromiseRejectBlock
+    ) {
+        do {
+            try self.tpdJKOPay?.redirect(paymentUrl) { result in
+                let response: [String: Any] = [
+                    "systemOS": "ios",
+                    "paymentUrl": paymentUrl,
+                    "status": String(result.status),
+                    "recTradeId": result.recTradeId,
+                    "bankTransactionId": result.bankTransactionId,
+                    "orderNumber": result.orderNumber
+                ]
+                resolve(response)
+            }
+        } catch let error as NSError {
+            reject("ios error jkoPayRedirectWithPaymentUrl", error.localizedDescription, nil?)
+        }
     }
     
     @objc
@@ -168,7 +195,7 @@ class TapPay: NSObject {
         if let url = userActivity.webpageURL, TPDJKOPay.handleJKOUniversalLink(url) {
             resolve(true)
         } else {
-            reject("Fail", "JKO Pay transaction fail.", nil)
+            reject("Fail", "JKO Pay transaction fail.", nil?)
         }
     }
     

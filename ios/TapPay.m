@@ -68,6 +68,12 @@ RCT_EXTERN_METHOD(getJKOPayPrime: (NSString*)returnUrl
 
 RCT_EXTERN_METHOD(isJKOPayAvailable:(RCTPromiseResolveBlock)promise rejector: (RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(installJKOApp)
+
+RCT_EXTERN_METHOD(jkoPayRedirectWithPaymentUrl: (NSString*)paymentUrl
+                  resolver: (RCTPromiseResolveBlock)resolve
+                  rejecter: (RCTPromiseRejectBlock)reject)
+
 //RCT_EXTERN_METHOD(handleJKOUniversalLink: (NSString*)url
 //                  resolver: (RCTPromiseResolveBlock)resolve
 //                  rejecter: (RCTPromiseRejectBlock)reject)
